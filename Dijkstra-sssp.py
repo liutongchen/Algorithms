@@ -26,6 +26,30 @@ def findShortestPath(totalNodes:int, costs:List[List[int]], target:int, source:i
     
     return d[target]
 
+# Method 2: O (E * logV) Implementation
+def findShortestPathWithHeap(totalNodes:int, costs:List[List[int]], target:int, source:int) -> int:
+    d = [float('inf') for i in range(totalNodes)] # d[i] represents shortest distance between source to i
+    unvisitedArr = [(float('inf'), i) for i in range(totalNodes)]
+    heapq.heapify(unvisitedArr)
+    d[source] = 0
+    unvisitedArr[0] = (0, 0)
+
+    while len(unvisitedArr) > 0:
+        # find the smallest edge that is not in visited
+        (dv, v) = heapq.heappop(unvisitedArr)
+
+        # update all other nodes in unvisited min heap 
+        N = len(unvisitedArr)
+        newUnvisitedArr = []
+        heapq.heapify(newUnvisitedArr)
+        for i in range(N):
+            du, u = heapq.heappop(unvisitedArr)
+            newDu = min(du, dv + costs[u][v])
+            d[u] = newDu
+            heapq.heappush(newUnvisitedArr, (newDu, u))
+        unvisitedArr = newUnvisitedArr
+    return d[target]
+
 # Test
 total = 6
 target = 5
